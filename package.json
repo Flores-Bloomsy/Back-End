@@ -23,8 +23,8 @@
     "helmet": "^8.0.0",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.7.1",
-    "resend": "^4.0.0"
+    "mongoose": "^8.8.2",
+    "resend": "^4.0.1"
   },
   "engines": {
     "node": ">= 22.11.0"
