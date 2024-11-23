@@ -1,8 +1,8 @@
-const { model, Schema, default: mongoose } = require("mongoose");
+const { model, Schema } = require("mongoose");
 
-const DetailsSchema = new Schema({
+const detailsSchema = new Schema({
   occasion: {
-    type: String,
+    type: [String],
     enum: [
       "Cumpleaños",
       "Condolencias",
@@ -17,15 +17,13 @@ const DetailsSchema = new Schema({
       "Corporativo",
       "Boda",
     ],
-    required: true,
   },
   size: {
     type: String,
     enum: ["Pequeño", "Mediano", "Grande"],
-    required: true,
   },
   color: {
-    type: String,
+    type: [String],
     enum: [
       "Rojo",
       "Blanco",
@@ -44,7 +42,6 @@ const DetailsSchema = new Schema({
       "Crema",
       "Champán",
     ],
-    required: true,
   },
   style: {
     type: String,
@@ -56,7 +53,6 @@ const DetailsSchema = new Schema({
       "Clasico",
       "Vintage",
     ],
-    required: true,
   },
   flowerType: {
     type: [String],
@@ -82,10 +78,9 @@ const DetailsSchema = new Schema({
       "Alstroemerias",
       "Flor de Loto",
     ],
-    required: true,
   },
   personality: {
-    type: String,
+    type: [String],
     enum: [
       "Alegre",
       "Romantico",
@@ -98,7 +93,6 @@ const DetailsSchema = new Schema({
       "Exótico",
       "Juvenil",
     ],
-    required: true,
   },
 });
 
@@ -155,12 +149,18 @@ const flowerBouquetSchema = new Schema(
       type: Number,
       default: 0,
     },
-    details: DetailsSchema,
-    comment: [commentSchema],
+    details: {
+      type: detailsSchema,
+      required: true,
+    },
+    comments: {
+      type: [commentSchema],
+      required: false,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = model("products", flowerBouquetSchemas);
+module.exports = model("bouquetFlower", flowerBouquetSchema);
