@@ -23,15 +23,15 @@ const userBuyer = new Schema(
       city: {
         type: String,
       },
-      phone: {
-        type: String,
-      },
-      favorites: [
-        { type: mongoose.Schema.Types.ObjectId, ref: "flowerBouquetSchema" },
-      ],
       postalCode: { type: String },
       country: { type: String },
     },
+    phone: {
+      type: String,
+    },
+    favorites: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "flowerBouquetSchema" },
+    ],
     isVerified: {
       type: Boolean,
       default: false,
