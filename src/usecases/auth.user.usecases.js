@@ -6,7 +6,7 @@ async function signup(req, res) {
   const { email, password, name } = req.body;
 
   try {
-    if (!email || !password || !name) {
+    if (!email || !password) {
       throw new Error("All fields are required");
     }
 
@@ -19,9 +19,9 @@ async function signup(req, res) {
     }
 
     const hashedPassword = await bcryptjs.hash(password, 10);
-    const verificationToken = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+    // const verificationToken = Math.floor(
+    //   100000 + Math.random() * 900000
+    // ).toString();
 
     const user = new User({
       email,
