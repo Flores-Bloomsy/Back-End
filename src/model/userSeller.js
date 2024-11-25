@@ -50,7 +50,6 @@ const userSellerSchema = new Schema(
     },
     phone: {
       type: String,
-      unique: true,
       select: false,
     },
     email: {
@@ -83,4 +82,4 @@ const userSellerSchema = new Schema(
   }
 );
 
-module.exports = model("userSeller", userSellerSchema);
+module.exports = model("userseller", userSellerSchema);
