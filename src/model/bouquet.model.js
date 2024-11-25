@@ -98,7 +98,7 @@ const detailsSchema = new Schema({
 
 const commentSchema = new Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
@@ -121,8 +121,8 @@ const commentSchema = new Schema({
 const flowerBouquetSchema = new Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Schema.Types.ObjectId,
+      ref: "userseller",
       required: true,
     },
     name: {
@@ -163,4 +163,4 @@ const flowerBouquetSchema = new Schema(
   }
 );
 
-module.exports = model("bouquetFlower", flowerBouquetSchema);
+module.exports = model("bouquetflower", flowerBouquetSchema);
