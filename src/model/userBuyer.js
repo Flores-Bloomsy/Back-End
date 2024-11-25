@@ -5,7 +5,7 @@ const userBuyer = new Schema(
     profilePic: { type: String },
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
