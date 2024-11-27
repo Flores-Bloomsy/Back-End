@@ -1,6 +1,6 @@
 const User = require("../model/userBuyer");
 const bcryptjs = require("bcryptjs");
-const generateTokenAndSetCookie = require("../utils/generateTokenAndSetCookie");
+const generateJWT = require("../utils/generateJWT");
 // para registrarse
 async function signup(req, res) {
   const { email, password, name } = req.body;
@@ -63,17 +63,19 @@ async function login(req, res) {
         .status(400)
         .json({ success: false, message: "invalid credentials" });
     }
-
-    generateTokenAndSetCookie(res, user._id);
+    // generar token
+    const token = generateJWT(user._id);
 
     await user.save();
 
     res.status(200).json({
       success: true,
       message: "Logged in successfully",
+      token,
       user: {
-        ...user._doc,
-        password: undefined,
+        _id: user._id,
+        name: user.name,
+        email: user.email,
       },
     });
   } catch (error) {
@@ -81,18 +83,8 @@ async function login(req, res) {
     res.status(400).json({ success: false, message: error.message });
   }
 }
-// para terminar secion
-async function logout(req, res) {
-  try {
-    res.clearCookie("token");
-    res.status(200).json({ success: true, message: "logged out successfully" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Error logging out" });
-  }
-}
 
 module.exports = {
   signup,
   login,
-  logout,
 };
