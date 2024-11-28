@@ -1,6 +1,7 @@
 const express = require("express");
 const userSellerUseCase = require("../usecases/userSeller.usecases");
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 //Sign on create new user seller
 router.post("/", async (req, res) => {
@@ -14,7 +15,7 @@ router.post("/", async (req, res) => {
         data: newUser,
       });
     } catch (error) {
-      res.json({
+      res.status(error.status || 500).json({
         succes: true,
         message: error.message,
       });
@@ -32,7 +33,33 @@ router.post("/login", async (req, res) => {
       data: { toke: token },
     });
   } catch (error) {
+    res.status(error.status || 500).json({
+      success: true,
+      message: error.message,
+    });
+  }
+});
+
+router.patch("/update/:id", auth, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const currentUserId = req.userSeller;
+    const updateData = req.body;
+
+    const updateUserSeller = await userSellerUseCase.updateById(
+      userId,
+      updateData,
+      currentUserId
+    );
+
+    console.log(currentUserId);
     res.json({
+      success: true,
+      message: "user update",
+      data: { updateUserSeller },
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
       success: true,
       message: error.message,
     });
