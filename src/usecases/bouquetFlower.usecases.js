@@ -12,7 +12,7 @@ async function getAllBouquet() {
     { path: "ownerId" },
   ]);
   if (bouquetsFlower.length === 0)
-    throw createError(404, "no bouquets created");
+    throw createError(200, "no bouquets created");
 
   return bouquetsFlower;
 }
@@ -29,10 +29,9 @@ async function getById(id) {
 async function updateById(id, ownerId, newData) {
   const findBouquet = await BouquetFlower.findById(id);
   if (!findBouquet) throw createError(404, "bouquet not found");
-  console.log(findBouquet);
 
-  if (newData._id) throw createError(404, "nose puede cambiar el id");
-  if (newData._id) throw createError(404, "nose puede cambiar el id");
+  if (newData.ownerId)
+    throw createError(400, "The ownerId property cannot be changed");
 
   if (findBouquet.ownerId.toString() !== ownerId._id.toString())
     throw createError(403, "you don't have permission to update this bouquet");

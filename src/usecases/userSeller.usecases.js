@@ -49,8 +49,31 @@ async function getById(id) {
   return user;
 }
 
+async function updateById(id, updatedData, currentUserId) {
+  console.log(id, currentUserId, updatedData);
+  if (updatedData.email || updatedData.password || updatedData.emailValidate) {
+    throw createError(
+      400,
+      "You cannot update the email, password or emailValidate"
+    );
+  }
+
+  const findUserSeller = await UserSeller.findById(id);
+  if (!findUserSeller) throw createError(404, "user not Found");
+
+  if (findUserSeller._id.toString() !== currentUserId._id.toString())
+    throw createError(403, "You do not have permission to update this profile");
+
+  const updateUserSeller = await UserSeller.findByIdAndUpdate(id, updatedData, {
+    new: true,
+  });
+
+  return updateUserSeller;
+}
+
 module.exports = {
   createNewUserSeller,
   login,
   getById,
+  updateById,
 };
