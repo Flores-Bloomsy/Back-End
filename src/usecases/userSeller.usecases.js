@@ -6,6 +6,14 @@ const { encrypt, compare } = require("../lib/encryption");
 const { createjwt } = require("../lib/jwt");
 
 async function createNewUserSeller(data) {
+  const allowedFields = ["email", "password"];
+  const invalidFields = Object.keys(data).filter(
+    (field) => !allowedFields.includes(field)
+  );
+
+  if (invalidFields.length > 0)
+    throw createError(400, "Needed only password and email");
+
   const existEmail = await UserSeller.findOne({ email: data.email });
 
   if (existEmail) throw createError(400, "user already exists");

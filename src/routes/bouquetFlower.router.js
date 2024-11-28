@@ -11,10 +11,10 @@ const router = Router();
 router.post("/", auth, async (req, res) => {
   try {
     const data = req.body;
-    const userId = req.userSeller;
+    const ownerId = req.userSeller;
     const bouquet = await bouquetUseCase.createNewBouquet({
       ...data,
-      userId: userId._id,
+      ownerId: ownerId._id,
     });
 
     res.json({
@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
       data: { allBouquets },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -60,7 +60,7 @@ router.get("/:id", async (req, res) => {
       data: { getBouquetById },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -72,9 +72,9 @@ router.patch("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
     const newData = req.body;
-    const userId = req.userSeller;
+    const ownerId = req.userSeller;
 
-    const updateBouquet = await bouquetUseCase.updateById(id, userId, newData);
+    const updateBouquet = await bouquetUseCase.updateById(id, ownerId, newData);
 
     res.json({
       success: true,
@@ -82,7 +82,7 @@ router.patch("/:id", auth, async (req, res) => {
       data: { updateBouquet },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -93,9 +93,9 @@ router.patch("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    const userId = req.userSeller;
+    const ownerId = req.userSeller;
 
-    const deleteBouquet = await bouquetUseCase.deleteById(id, userId);
+    const deleteBouquet = await bouquetUseCase.deleteById(id, ownerId);
 
     res.json({
       success: true,
@@ -103,7 +103,7 @@ router.delete("/:id", auth, async (req, res) => {
       data: { deleteBouquet },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });

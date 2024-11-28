@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
         data: newUser,
       });
     } catch (error) {
-      res.json({
+      res.status(error.status || 500).json({
         succes: true,
         message: error.message,
       });
@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
       data: { toke: token },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: true,
       message: error.message,
     });

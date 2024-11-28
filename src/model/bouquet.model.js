@@ -97,7 +97,7 @@ const detailsSchema = new Schema({
 });
 
 const commentSchema = new Schema({
-  userId: {
+  authorId: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -120,7 +120,7 @@ const commentSchema = new Schema({
 
 const flowerBouquetSchema = new Schema(
   {
-    userId: {
+    ownerId: {
       type: Schema.Types.ObjectId,
       ref: "userseller",
       required: true,

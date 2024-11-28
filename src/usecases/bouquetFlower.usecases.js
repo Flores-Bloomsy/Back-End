@@ -2,30 +2,39 @@ const BouquetFlower = require("../model/bouquet.model");
 const createError = require("http-errors");
 
 async function createNewBouquet(data) {
-  const newBouquet = (await BouquetFlower.create(data)).populate("userId");
+  const newBouquet = (await BouquetFlower.create(data)).populate("ownerId");
 
   return newBouquet;
 }
 
 async function getAllBouquet() {
-  const bouquetsFlower = BouquetFlower.find({}).populate([{ path: "userId" }]);
+  const bouquetsFlower = await BouquetFlower.find({}).populate([
+    { path: "ownerId" },
+  ]);
+  if (bouquetsFlower.length === 0)
+    throw createError(404, "no bouquets created");
+
   return bouquetsFlower;
 }
 
 async function getById(id) {
   const findBouquet = await BouquetFlower.findById(id).populate([
-    { path: "userId" },
+    { path: "ownerId" },
   ]);
-  if (!findBouquet) createError(404, "bouquet not found");
+  if (!findBouquet) throw createError(404, "bouquet not found");
 
   return findBouquet;
 }
 
-async function updateById(id, userId, newData) {
+async function updateById(id, ownerId, newData) {
   const findBouquet = await BouquetFlower.findById(id);
   if (!findBouquet) throw createError(404, "bouquet not found");
+  console.log(findBouquet);
 
-  if (findBouquet.userId.toString() !== userId._id.toString())
+  if (newData._id) throw createError(404, "nose puede cambiar el id");
+  if (newData._id) throw createError(404, "nose puede cambiar el id");
+
+  if (findBouquet.ownerId.toString() !== ownerId._id.toString())
     throw createError(403, "you don't have permission to update this bouquet");
 
   const updateBouquet = await BouquetFlower.findByIdAndUpdate(id, newData, {
@@ -34,11 +43,11 @@ async function updateById(id, userId, newData) {
   return updateBouquet;
 }
 
-async function deleteById(idBouquet, userId) {
+async function deleteById(idBouquet, ownerId) {
   const findBouquet = await BouquetFlower.findById(idBouquet);
   if (!findBouquet) throw createError(404, "bouquet not found");
 
-  if (findBouquet.userId.toString() !== userId._id.toString())
+  if (findBouquet.ownerId.toString() !== ownerId._id.toString())
     throw createError(403, "you don't have permission to deleted this bouquet");
 
   const deleteBouquet = await BouquetFlower.findByIdAndDelete(idBouquet);
