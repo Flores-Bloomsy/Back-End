@@ -13,7 +13,6 @@ app.use(express.json());
 
 app.use("/bouquet", bouquet);
 app.use("/userseller", userSeller);
-//jarol
 app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
