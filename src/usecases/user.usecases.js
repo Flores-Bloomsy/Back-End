@@ -1,9 +1,11 @@
 const User = require("../model/userBuyer");
 const bcryptjs = require("bcryptjs");
 const generateJWT = require("../utils/generateJWT");
+
 // para registrarse
 async function signup(req, res) {
-  const { email, password, name } = req.body;
+  const { email, password } = req.body;
+  console.log("esto es el body", req.body);
 
   try {
     if (!email || !password) {
@@ -26,7 +28,6 @@ async function signup(req, res) {
     const user = new User({
       email,
       password: hashedPassword,
-      name,
     });
 
     await user.save();

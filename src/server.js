@@ -2,8 +2,17 @@ const express = require("express");
 const bouquet = require("./routes/bouquetFlower.router");
 const userSeller = require("./routes/userSeller.router");
 const authRoutes = require("./routes/user.router");
+const cors = require("cors");
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
