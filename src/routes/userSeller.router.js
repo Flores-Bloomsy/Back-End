@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
 router.patch("/update/:id", auth, async (req, res) => {
   try {
     const userId = req.params.id;
-    const currentUserId = req.userSeller;
+    const currentUserId = req.userS;
     const updateData = req.body;
 
     const updateUserSeller = await userSellerUseCase.updateById(

@@ -1,17 +1,17 @@
 process.loadEnvFile();
 
 const { Router } = require("express");
-const createError = require("http-errors");
 const bouquetUseCase = require("../usecases/bouquetFlower.usecases");
 const auth = require("../middleware/auth");
+const authorize = require("../middleware/authorize");
 
 const router = Router();
 
 //create new Bouquet
-router.post("/", auth, async (req, res) => {
+router.post("/", auth, authorize("seller"), async (req, res) => {
   try {
     const data = req.body;
-    const ownerId = req.userSeller;
+    const ownerId = req.user;
     const bouquet = await bouquetUseCase.createNewBouquet({
       ...data,
       ownerId: ownerId._id,
@@ -72,7 +72,7 @@ router.patch("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
     const newData = req.body;
-    const ownerId = req.userSeller;
+    const ownerId = req.user;
 
     const updateBouquet = await bouquetUseCase.updateById(id, ownerId, newData);
 
@@ -93,7 +93,7 @@ router.patch("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    const ownerId = req.userSeller;
+    const ownerId = req.user;
 
     const deleteBouquet = await bouquetUseCase.deleteById(id, ownerId);
 
