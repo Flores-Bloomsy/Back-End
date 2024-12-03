@@ -70,3 +70,72 @@ exports.deleteCart = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Agregar un producto al carrito
+exports.addProductToCart = async (req, res) => {
+  try {
+    const { cartId, BouquetFlowerId, quantity } = req.body;
+
+    const cart = await ShoppingCart.findById(cartId);
+
+    if (!cart) return res.status(404).json({ message: "Carrito no encontrado" });
+
+    // Verificar si el producto ya está en el carrito
+    const existingItem = cart.items.find((item) => item.BouquetFlowerId.toString() === BouquetFlowerId);
+
+    if (existingItem) {
+      // Si el producto ya existe, aumentar la cantidad
+      existingItem.quantity += quantity;
+    } else {
+      // Si no existe, agregar un nuevo producto
+      cart.items.push({ BouquetFlowerId, quantity });
+    }
+
+    const updatedCart = await cart.save();
+    res.status(200).json(updatedCart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Modificar la cantidad de un producto en el carrito
+exports.updateProductQuantity = async (req, res) => {
+  try {
+    const { cartId, BouquetFlowerId, quantity } = req.body;
+
+    const cart = await ShoppingCart.findById(cartId);
+
+    if (!cart) return res.status(404).json({ message: "Carrito no encontrado" });
+
+    const item = cart.items.find((item) => item.BouquetFlowerId.toString() === BouquetFlowerId);
+
+    if (!item) return res.status(404).json({ message: "Producto no encontrado en el carrito" });
+
+    // Actualizar la cantidad
+    item.quantity = quantity;
+
+    const updatedCart = await cart.save();
+    res.status(200).json(updatedCart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Eliminar un producto del carrito
+exports.removeProductFromCart = async (req, res) => {
+  try {
+    const { cartId, BouquetFlowerId } = req.body;
+
+    const cart = await ShoppingCart.findById(cartId);
+
+    if (!cart) return res.status(404).json({ message: "Carrito no encontrado" });
+
+    // Filtrar los productos para eliminar el indicado
+    cart.items = cart.items.filter((item) => item.BouquetFlowerId.toString() !== BouquetFlowerId);
+
+    const updatedCart = await cart.save();
+    res.status(200).json(updatedCart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
