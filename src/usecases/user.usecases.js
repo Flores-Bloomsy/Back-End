@@ -74,11 +74,6 @@ async function login(req, res) {
       success: true,
       message: "Logged in successfully",
       token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-      },
     });
   } catch (error) {
     console.log("error in login", error);
