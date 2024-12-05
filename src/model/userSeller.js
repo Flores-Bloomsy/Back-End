@@ -63,6 +63,7 @@ const userSellerSchema = new Schema(
       required: true,
       unique: true,
       validate: [isEmail, "Correo no válido"],
+      immutable: true,
     },
     password: {
       type: String,
@@ -72,6 +73,11 @@ const userSellerSchema = new Schema(
     emailValidate: {
       type: Boolean,
       default: false,
+    },
+    rol: {
+      type: String,
+      default: "seller",
+      immutable: true,
     },
     address: {
       type: addressSchema,

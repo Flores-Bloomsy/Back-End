@@ -1,9 +1,12 @@
 const User = require("../model/userBuyer");
 const bcryptjs = require("bcryptjs");
-const generateJWT = require("../utils/generateJWT");
+const UserBuyer = require("../model/userBuyer");
+const { encrypt, compare } = require("../lib/encryption");
+const { createjwt } = require("../lib/jwt");
+
 // para registrarse
 async function signup(req, res) {
-  const { email, password, name } = req.body;
+  const { email, password } = req.body;
 
   try {
     if (!email || !password) {
@@ -18,7 +21,7 @@ async function signup(req, res) {
         .json({ success: false, message: "User already exists" });
     }
 
-    const hashedPassword = await bcryptjs.hash(password, 10);
+    const hashedPassword = encrypt(password);
     // const verificationToken = Math.floor(
     //   100000 + Math.random() * 900000
     // ).toString();
@@ -26,7 +29,6 @@ async function signup(req, res) {
     const user = new User({
       email,
       password: hashedPassword,
-      name,
     });
 
     await user.save();
@@ -57,14 +59,14 @@ async function login(req, res) {
         .json({ success: false, message: "invalid credentials" });
     }
 
-    const isPasswordValid = await bcryptjs.compare(password, user.password);
+    const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
       return res
         .status(400)
         .json({ success: false, message: "invalid credentials" });
     }
     // generar token
-    const token = generateJWT(user._id);
+    const token = createjwt({ id: user._id, rol: user.rol });
 
     await user.save();
 
@@ -72,11 +74,6 @@ async function login(req, res) {
       success: true,
       message: "Logged in successfully",
       token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-      },
     });
   } catch (error) {
     console.log("error in login", error);
@@ -84,7 +81,17 @@ async function login(req, res) {
   }
 }
 
+async function getById(id) {
+  if (!Types.ObjectId.isValid(id)) throw createError(400, "Invalid ID format");
+
+  const user = await UserBuyer.findById(id);
+  if (!user) throw createError(404, "user not found ss");
+
+  return user;
+}
+
 module.exports = {
   signup,
   login,
+  getById,
 };

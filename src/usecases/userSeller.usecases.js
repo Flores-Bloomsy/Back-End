@@ -35,7 +35,7 @@ async function login(data) {
   const isValidPassword = compare(data.password, user.password);
   if (!isValidPassword) throw createError(401, "invalid credential");
 
-  const token = createjwt({ id: user._id });
+  const token = createjwt({ id: user._id, rol: user.rol });
 
   return token;
 }
@@ -44,7 +44,7 @@ async function getById(id) {
   if (!Types.ObjectId.isValid(id)) throw createError(400, "Invalid ID format");
 
   const user = await UserSeller.findById(id);
-  if (!user) throw createError(404, "user not found");
+  if (!user) throw createError(404, "user not found 11");
 
   return user;
 }
