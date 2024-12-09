@@ -56,7 +56,6 @@ const userSellerSchema = new Schema(
     },
     phone: {
       type: String,
-      select: false,
     },
     email: {
       type: String,

@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
       });
     } catch (error) {
       res.status(error.status || 500).json({
-        succes: true,
+        succes: false,
         message: error.message,
       });
     }
@@ -34,7 +34,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     res.status(error.status || 500).json({
-      success: true,
+      success: false,
       message: error.message,
     });
   }
@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
 router.patch("/update/:id", auth, async (req, res) => {
   try {
     const userId = req.params.id;
-    const currentUserId = req.userS;
+    const currentUserId = req.user;
     const updateData = req.body;
 
     const updateUserSeller = await userSellerUseCase.updateById(
@@ -52,15 +52,33 @@ router.patch("/update/:id", auth, async (req, res) => {
       currentUserId
     );
 
-    console.log(currentUserId);
     res.json({
       success: true,
       message: "user update",
-      data: { updateUserSeller },
+      data: updateUserSeller,
     });
   } catch (error) {
     res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const user = await userSellerUseCase.getById(id);
+
+    res.json({
       success: true,
+      message: "user By Id",
+      data: { user },
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
       message: error.message,
     });
   }

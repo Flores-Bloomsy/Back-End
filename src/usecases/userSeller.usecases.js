@@ -44,13 +44,12 @@ async function getById(id) {
   if (!Types.ObjectId.isValid(id)) throw createError(400, "Invalid ID format");
 
   const user = await UserSeller.findById(id);
-  if (!user) throw createError(404, "user not found 11");
+  if (!user) throw createError(404, "user not found");
 
   return user;
 }
 
 async function updateById(id, updatedData, currentUserId) {
-  console.log(id, currentUserId, updatedData);
   if (updatedData.email || updatedData.password || updatedData.emailValidate) {
     throw createError(
       400,
