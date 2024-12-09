@@ -23,8 +23,20 @@ const userBuyer = new Schema(
       city: {
         type: String,
       },
-      postalCode: { type: String },
-      country: { type: String },
+      postalCode: {
+        type: String,
+      },
+      state: {
+        type: String,
+      },
+      number: {
+        type: String,
+      },
+    },
+    rol: {
+      type: String,
+      default: "buyer",
+      immutable: true,
     },
     phone: {
       type: String,

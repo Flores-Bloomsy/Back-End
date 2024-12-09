@@ -1,20 +1,20 @@
 process.loadEnvFile();
 
 const { Router } = require("express");
-const createError = require("http-errors");
 const bouquetUseCase = require("../usecases/bouquetFlower.usecases");
 const auth = require("../middleware/auth");
+const authorize = require("../middleware/authorize");
 
 const router = Router();
 
 //create new Bouquet
-router.post("/", auth, async (req, res) => {
+router.post("/", auth, authorize("seller"), async (req, res) => {
   try {
     const data = req.body;
-    const userId = req.userSeller;
+    const ownerId = req.user;
     const bouquet = await bouquetUseCase.createNewBouquet({
       ...data,
-      userId: userId._id,
+      ownerId: ownerId._id,
     });
 
     res.json({
@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
       data: { allBouquets },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -60,7 +60,7 @@ router.get("/:id", async (req, res) => {
       data: { getBouquetById },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -72,9 +72,9 @@ router.patch("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
     const newData = req.body;
-    const userId = req.userSeller;
+    const ownerId = req.user;
 
-    const updateBouquet = await bouquetUseCase.updateById(id, userId, newData);
+    const updateBouquet = await bouquetUseCase.updateById(id, ownerId, newData);
 
     res.json({
       success: true,
@@ -82,7 +82,7 @@ router.patch("/:id", auth, async (req, res) => {
       data: { updateBouquet },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -93,9 +93,9 @@ router.patch("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    const userId = req.userSeller;
+    const ownerId = req.user;
 
-    const deleteBouquet = await bouquetUseCase.deleteById(id, userId);
+    const deleteBouquet = await bouquetUseCase.deleteById(id, ownerId);
 
     res.json({
       success: true,
@@ -103,7 +103,7 @@ router.delete("/:id", auth, async (req, res) => {
       data: { deleteBouquet },
     });
   } catch (error) {
-    res.json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
