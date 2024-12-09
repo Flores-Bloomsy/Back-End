@@ -1,8 +1,9 @@
 const User = require("../model/userBuyer");
-const bcryptjs = require("bcryptjs");
-const UserBuyer = require("../model/userBuyer");
 const { encrypt, compare } = require("../lib/encryption");
 const { createjwt } = require("../lib/jwt");
+const createError = require("http-errors");
+const { Types } = require("mongoose");
+const { json } = require("express");
 
 // para registrarse
 async function signup(req, res) {
@@ -81,17 +82,67 @@ async function login(req, res) {
   }
 }
 
-async function getById(id) {
-  if (!Types.ObjectId.isValid(id)) throw createError(400, "Invalid ID format");
+async function getById(req, res) {
+  const userId = req.params.id;
 
-  const user = await UserBuyer.findById(id);
-  if (!user) throw createError(404, "user not found ss");
+  console.log(userId);
+  if (!Types.ObjectId.isValid(userId))
+    throw createError(400, "Invalid ID format");
+  try {
+    const user = await User.findById(userId);
+    if (!user) throw createError(404, "user not found");
 
-  return user;
+    res.json({
+      success: true,
+      message: "get user by id",
+      data: { user },
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+async function updateUserById(req, res) {
+  const id = req.params.id;
+  const updateData = req.body;
+  const currentUserId = req.user;
+
+  console.log("id", id);
+  console.log("currenid", currentUserId);
+
+  try {
+    const findUserBuyer = await User.findById(id);
+    if (!findUserBuyer) throw createError(404, "user not found");
+
+    if (findUserBuyer._id.toString() !== currentUserId._id.toString())
+      throw createError(
+        403,
+        "You do not have permission to update this profile"
+      );
+
+    const updateUserBuyer = await User.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    res.json({
+      success: true,
+      message: "user Buyer update",
+      data: updateUserBuyer,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 }
 
 module.exports = {
   signup,
   login,
   getById,
+  updateUserById,
 };
