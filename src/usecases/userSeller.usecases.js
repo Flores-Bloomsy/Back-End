@@ -35,7 +35,7 @@ async function login(data) {
   const isValidPassword = compare(data.password, user.password);
   if (!isValidPassword) throw createError(401, "invalid credential");
 
-  const token = createjwt({ id: user._id });
+  const token = createjwt({ id: user._id, rol: user.rol });
 
   return token;
 }
@@ -50,7 +50,6 @@ async function getById(id) {
 }
 
 async function updateById(id, updatedData, currentUserId) {
-  console.log(id, currentUserId, updatedData);
   if (updatedData.email || updatedData.password || updatedData.emailValidate) {
     throw createError(
       400,
