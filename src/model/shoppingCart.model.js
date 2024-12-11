@@ -1,33 +1,34 @@
 const { model, Schema, default: mongoose } = require("mongoose");
 
 const shoppingCartSchema = new Schema({
-  userId: {
+  ownerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "userBuyer",
-    required: true,
+    ref: "User",
+    required: [true, "El campo 'ownerId' es obligatorio."],
+    unique: true,
   },
   items: [
     {
-      BouquetFlowerId: {
+      bouquetFlowerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "bouquetFlower",
-        required: true,
+        ref: "bouquetflower",
+        required: [
+          true,
+          "El campo 'bouquetFlowerId' es obligatorio para cada ítem.",
+        ],
       },
       quantity: {
         type: Number,
-        required: true,
-        min: 1,
+        required: [true, "El campo 'quantity' es obligatorio para cada ítem."],
+        min: [1, "La cantidad mínima permitida es 1."],
       },
     },
   ],
-  status: {
-    type: String,
-    enum: ["active", "completed"],
-    default: "active",
-  },
 
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
+
+module.exports = model("shoppingcart", shoppingCartSchema);
