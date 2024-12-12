@@ -4,11 +4,12 @@ const { Router } = require("express");
 const bouquetUseCase = require("../usecases/bouquetFlower.usecases");
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
+const createError = require("http-errors");
 
 const router = Router();
 
 //create new Bouquet
-router.post("/", auth, authorize("seller"), async (req, res) => {
+router.post("/create-bouquet", auth, authorize("seller"), async (req, res) => {
   try {
     const data = req.body;
     const ownerId = req.user;
@@ -31,7 +32,7 @@ router.post("/", auth, authorize("seller"), async (req, res) => {
 });
 
 // get all Bouquet
-router.get("/", async (req, res) => {
+router.get("/get-bouquets", async (req, res) => {
   try {
     const allBouquets = await bouquetUseCase.getAllBouquet();
 
@@ -68,11 +69,12 @@ router.get("/:id", async (req, res) => {
 });
 
 //update bouquet by id
-router.patch("/:id", auth, async (req, res) => {
+router.patch("/update/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
     const newData = req.body;
     const ownerId = req.user;
+    if (newData.sold) throw createError(403, "sold is not modifiable");
 
     const updateBouquet = await bouquetUseCase.updateById(id, ownerId, newData);
 
@@ -90,7 +92,7 @@ router.patch("/:id", auth, async (req, res) => {
 });
 
 //delete bouquet by id
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/delete/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
     const ownerId = req.user;
