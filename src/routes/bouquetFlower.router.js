@@ -13,6 +13,13 @@ router.post("/create-bouquet", auth, authorize("seller"), async (req, res) => {
   try {
     const data = req.body;
     const ownerId = req.user;
+
+    if (data.sold)
+      throw createError(
+        409,
+        "'sold' field should not be provided and cannot be modified"
+      );
+
     const bouquet = await bouquetUseCase.createNewBouquet({
       ...data,
       ownerId: ownerId._id,
@@ -74,7 +81,7 @@ router.patch("/update/:id", auth, async (req, res) => {
     const id = req.params.id;
     const newData = req.body;
     const ownerId = req.user;
-    if (newData.sold) throw createError(403, "sold is not modifiable");
+    if (newData.sold) throw createError(409, "sold is not modifiable");
 
     const updateBouquet = await bouquetUseCase.updateById(id, ownerId, newData);
 
