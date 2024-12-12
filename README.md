@@ -340,7 +340,6 @@ formato del Body de la solicitud
   ],
   "price": 299.1231231399,
   "stock": 50,
-  "sold": 5,
   "details": {
     "occasion": ["Boda", "Cumpleaños"],
     "size": "Mediano",
@@ -349,63 +348,68 @@ formato del Body de la solicitud
     "flowerType": ["Rosas"],
     "personality": ["Romantico", "Elegante"]
   }
-}
-```
-
-Respuesta exitosa
-
-```json
-{
-  "success": true,
-  "message": "bouquet created",
-  "data": {
-    "bouquet": {
-      "ownerId": {
-        "_id": "675a678b739fe9ae160b1491",
-        "email": "miCorreo@hotmail.com",
-        "emailValidate": false,
-        "rol": "seller",
-        "createdAt": "2024-12-12T04:33:15.451Z",
-        "updatedAt": "2024-12-12T04:56:03.899Z",
-        "__v": 0,
-        "address": {
-          "street": "my street",
-          "number": "5488",
-          "city": "my city",
-          "state": "my state",
-          "postalCode": "45789"
-        },
-        "phone": "3325645897",
-        "schedule": {
-          "opening": "21:12",
-          "closing": "12:12"
-        },
-        "storeName": "flower street"
-      },
-      "name": "Bouquet de Rosas Rojas",
-      "description": "Un hermoso ramo de rosas rojas frescas para cualquier ocasión especial…",
-      "images": [
-        "https://example.com/images/rosas1.jpg",
-        "https://example.com/images/rosas2.jpg"
-      ],
-      "price": 299.1231231399,
-      "stock": 50,
-      "sold": 5,
-      "details": {
-        "occasion": ["Boda", "Cumpleaños"],
-        "size": "Mediano",
-        "color": ["Rojo", "Verde"],
-        "style": "Elegante",
-        "flowerType": ["Rosas"],
-        "personality": ["Romantico", "Elegante"]
-      },
-      "_id": "675a718a739fe9ae160b14b3",
-      "comments": [],
-      "createdAt": "2024-12-12T05:15:54.154Z",
-      "updatedAt": "2024-12-12T05:15:54.154Z",
-      "__v": 0
-    }
-  }
+}{
+	"success": true,
+	"message": "bouquet created",
+	"data": {
+		"bouquet": {
+			"ownerId": {
+				"_id": "675a678b739fe9ae160b1491",
+				"email": "miCorreo@hotmail.com",
+				"emailValidate": false,
+				"rol": "seller",
+				"createdAt": "2024-12-12T04:33:15.451Z",
+				"updatedAt": "2024-12-12T04:56:03.899Z",
+				"__v": 0,
+				"address": {
+					"street": "my street",
+					"number": "5488",
+					"city": "my city",
+					"state": "my state",
+					"postalCode": "45789"
+				},
+				"phone": "3325645897",
+				"schedule": {
+					"opening": "21:12",
+					"closing": "12:12"
+				},
+				"storeName": "flower street"
+			},
+			"name": "Bouquet de Rosas Rojas",
+			"description": "Un hermoso ramo de rosas rojas frescas para cualquier ocasión especial…",
+			"images": [
+				"https://example.com/images/rosas1.jpg",
+				"https://example.com/images/rosas2.jpg"
+			],
+			"price": 299.1231231399,
+			"stock": 50,
+			"sold": 0,
+			"details": {
+				"occasion": [
+					"Boda",
+					"Cumpleaños"
+				],
+				"size": "Mediano",
+				"color": [
+					"Rojo",
+					"Verde"
+				],
+				"style": "Elegante",
+				"flowerType": [
+					"Rosas"
+				],
+				"personality": [
+					"Romantico",
+					"Elegante"
+				]
+			},
+			"_id": "675aeb26ff036f2d3cd0b4bf",
+			"comments": [],
+			"createdAt": "2024-12-12T13:54:46.754Z",
+			"updatedAt": "2024-12-12T13:54:46.754Z",
+			"__v": 0
+		}
+	}
 }
 ```
 
