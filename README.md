@@ -11,7 +11,7 @@
   - [Actualizar usuario](#actualizar-usuario-por-su-id-1)
   - [Obtener usuario por id](#obtener-usuario-por-su-id-1)
 - [Productos (Bouquets)](#productos-bouquets)
-  - [Agregar un nuevo ramo](#agregar-un-nuevo-producto)
+  - [Crear un nuevo ramo](#crear-un-nuevo-producto)
   - [Ver todos los productos](#ver-todos-los-productos)
   - [Ver producto por su id](#ver-producto-por-su-id)
   - [Actualizar producto por su id](#actualizar-producto-por-id)
@@ -320,9 +320,9 @@ respuesta exitosa
 
 ## productos (BOUQUETS)
 
-### Agregar un nuevo producto
+### Crear un nuevo producto
 
-POST / http://localhost:8080/bouquet/
+POST / http://localhost:8080/bouquet/create-bouquet
 
 **Configurar**  
 en `Headers` crea un nuevo Header llamado `Authorization` y asignale el valor `Bearer + TOKEN`, para continuar con la solicitud
@@ -411,7 +411,7 @@ Respuesta exitosa
 
 ### Ver todos los productos
 
-GET / http://localhost:8080/bouquet/
+GET / http://localhost:8080/bouquet/get-bouquets
 
 regresa todos los ramos existentes
 
@@ -482,7 +482,7 @@ respuesta exitosa
 en `Headers` crea un nuevo Header llamado `Authorization` y asignale el valor `Bearer + TOKEN`, para continuar con la solicitud  
 solo el creador del producto lo puede actualizar
 
-PATCH / http://localhost:8080/bouquet/:productId
+PATCH / http://localhost:8080/bouquet/update/:productId
 
 formato del Body de la solicitud
 
@@ -530,7 +530,7 @@ Respuesta exitosa
 
 ### Borrar producto por id
 
-DELETE / http://localhost:8080/bouquet/:productId
+DELETE / http://localhost:8080/bouquet/delete/:productId
 
 **Configurar**  
 en `Headers` crea un nuevo Header llamado `Authorization` y asignale el valor `Bearer + TOKEN`, para continuar con la solicitud  
