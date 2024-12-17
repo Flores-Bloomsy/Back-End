@@ -24,7 +24,6 @@
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.2",
-    "nanoid": "^5.0.9",
     "resend": "^4.0.1",
     "validator": "^13.12.0"
   },
