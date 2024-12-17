@@ -12,7 +12,6 @@ async function auth(req, res, next) {
 
     const payload = verifyToken(token);
 
-    console.log(payload);
     let user;
 
     try {
@@ -26,12 +25,10 @@ async function auth(req, res, next) {
     if (!user) {
       try {
         user = await User.findById(payload.id);
-        console.log("user2", user);
       } catch (error) {
         if (error.status !== 404) throw error;
       }
     }
-    console.log("user1", user);
 
     if (!user) throw createError(404, "user not found");
 

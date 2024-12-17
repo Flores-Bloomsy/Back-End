@@ -5,21 +5,19 @@ const auth = require("../middleware/auth");
 
 //Sign on create new user seller
 router.post("/", async (req, res) => {
-  {
-    try {
-      const userData = req.body;
-      const newUser = await userSellerUseCase.createNewUserSeller(userData);
-      res.json({
-        success: true,
-        message: "user seller created",
-        data: newUser,
-      });
-    } catch (error) {
-      res.status(error.status || 500).json({
-        succes: false,
-        message: error.message,
-      });
-    }
+  try {
+    const userData = req.body;
+    const newUser = await userSellerUseCase.createNewUserSeller(userData);
+    res.json({
+      success: true,
+      message: "user seller created",
+      data: newUser,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      succes: false,
+      message: error.message,
+    });
   }
 });
 
