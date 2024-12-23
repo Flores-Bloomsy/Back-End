@@ -5,6 +5,7 @@ const authorize = require("../middleware/authorize");
 
 const router = express.Router();
 
+//crear una orden
 router.post("/new-order", auth, authorize("buyer"), async (req, res) => {
   try {
     const customerId = req.user.id;
@@ -31,6 +32,7 @@ router.post("/new-order", auth, authorize("buyer"), async (req, res) => {
   }
 });
 
+//actualizar estado de envios de los ramos
 router.patch(
   "/update-shipping/:orderId",
   auth,
@@ -60,6 +62,7 @@ router.patch(
   }
 );
 
+// obtener las ordenes por el usuario comprador (historial de compras)
 router.get("/orders-by-buyer", auth, authorize("buyer"), async (req, res) => {
   try {
     const buyerId = req.user.id;
@@ -78,6 +81,7 @@ router.get("/orders-by-buyer", auth, authorize("buyer"), async (req, res) => {
   }
 });
 
+//obtener las ordenes por el vendedor (historial de ventas)
 router.get("/orders-by-seller", auth, authorize("seller"), async (req, res) => {
   try {
     const sellerId = req.user.id;

@@ -2,26 +2,29 @@ const ShoppingCart = require("../model/shoppingCart.model");
 const createError = require("http-errors");
 
 // Crear un carrito de compras
+// controllers/shoppingCartController.js
+const ShoppingCartUseCases = require("../usecases/shoppingCart.useCases"); // Ajusta la ruta de acuerdo a tu estructura
+
+// Controlador para crear un carrito
 exports.createCart = async (req, res) => {
+  const ownerId = req.user.id; // Extraemos el id del usuario autenticado
+  const { items } = req.body; // Extraemos ownerId e items del cuerpo de la solicitud
+
   try {
-    const ownerId = req.user.id;
+    // Llamamos a la función de uso que crea el carrito
+    const newCart = await ShoppingCartUseCases.createCart({ ownerId, items });
 
-    const { items } = req.body;
-
-    const cart = await ShoppingCart.findOne({ ownerId });
-    if (cart) throw createError(400, "A cart already exists for this user.");
-
-    const newCart = await ShoppingCart.create({ ownerId, items });
-
-    res.json({
+    // Si se crea el carrito con éxito, respondemos con el carrito creado
+    res.status(201).json({
       success: true,
-      message: "shopping cart created",
+      message: "Shopping cart created successfully.",
       data: newCart,
     });
   } catch (error) {
+    // Si ocurre un error, respondemos con un mensaje adecuado y el código de estado correspondiente
     res.status(error.status || 500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Internal Server Error",
     });
   }
 };
