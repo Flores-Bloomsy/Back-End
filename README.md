@@ -777,6 +777,8 @@ Respuesta exitosa
 
 ### Modificar la cantidad de un producto
 
+PATCH / http://localhost:8080/cart/update-product-quantity/
+
 formato del Body de la solicitud
 
 ```json
