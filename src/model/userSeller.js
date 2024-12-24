@@ -51,7 +51,7 @@ const userSellerSchema = new Schema(
     storeName: {
       type: String,
     },
-    logo: {
+    profilePic: {
       type: String,
     },
     phone: {
