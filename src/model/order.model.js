@@ -56,6 +56,10 @@ const shippingAddressSchema = new Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
     number: {
       type: String,
       required: true,
