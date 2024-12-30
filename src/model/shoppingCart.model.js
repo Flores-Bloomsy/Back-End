@@ -5,6 +5,7 @@ itemsSchema = new Schema(
     bouquetFlowerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "bouquetflower",
+
       required: [
         true,
         "El campo 'bouquetFlowerId' es obligatorio para cada ítem.",
