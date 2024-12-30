@@ -24,6 +24,15 @@ async function createNewOrder(data) {
     }
     console.log(foundProduct.ownerId);
     product.sellerId = foundProduct.ownerId;
+
+    // Verificar si hay suficiente stock
+    if (foundProduct.stock < product.quantity) {
+      throw createError(400, `no tiene stock suficiente ${foundProduct.name}`);
+    }
+
+    // Restar la cantidad comprada del stock
+    foundProduct.stock -= product.quantity;
+    await foundProduct.save();
   }
 
   const newOrder = (await Order.create(data)).populate(
@@ -31,6 +40,7 @@ async function createNewOrder(data) {
   );
   return newOrder;
 }
+
 //actualizar estado del envio
 async function updateShippingStatus(
   orderId,
