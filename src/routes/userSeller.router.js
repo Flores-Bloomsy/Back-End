@@ -2,6 +2,8 @@ const express = require("express");
 const userSellerUseCase = require("../usecases/userSeller.usecases");
 const router = express.Router();
 const auth = require("../middleware/auth");
+const userSeller = require("../model/userSeller");
+const { createPartnerReferral } = require("../controllers/seller.controller");
 
 //Sign on create new user seller
 router.post("/", async (req, res) => {
@@ -79,6 +81,32 @@ router.get("/:id", async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+});
+
+// Endpoint para crear el Partner Referral
+router.post("/create-partner-referral", async (req, res) => {
+  const { sellerId } = req.body; // o req.params si lo pasas en la URL
+
+  if (!sellerId) {
+    return res.status(400).json({
+      success: false,
+      message: "Seller ID es requerido",
+    });
+  }
+
+  try {
+    // Llamamos a la función que crea el Partner Referral
+    const result = await createPartnerReferral(sellerId);
+
+    res.status(200).json({
+      success: true,
+      message: "Partner Referral creado con éxito",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error al crear el Partner Referral:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 

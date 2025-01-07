@@ -35,9 +35,21 @@ async function createNewOrder(data) {
     await foundProduct.save();
   }
 
-  const newOrder = (await Order.create(data)).populate(
-    "products.productId products.sellerId"
-  );
+  // **Lógica para agrupar los productos por sellerId y calcular pagos**
+  const sellerPayments = data.products.reduce((acc, product) => {
+    const { sellerId, totalPrice } = product;
+    if (!acc[sellerId]) {
+      acc[sellerId] = 0;
+    }
+    acc[sellerId] += totalPrice;
+    return acc;
+  }, {});
+
+  console.log({ sellerPayments });
+
+  const newOrder = await Order.create(data);
+
+  await newOrder.populate("products.productId products.sellerId");
   return newOrder;
 }
 
@@ -94,9 +106,37 @@ async function getOrdersBySellerId(sellerId) {
   return findOrders;
 }
 
+// Actualizar el paypalTransactionId de una orden
+
+async function updatePaypalTransactionId(
+  orderId,
+  paypalTransactionId,
+  paymentStatus
+) {
+  const existOrder = await Order.findById(orderId);
+
+  if (!existOrder) {
+    throw createError(404, "Order not found");
+  }
+
+  existOrder.paypalTransactionId = paypalTransactionId;
+  existOrder.paymentStatus = paymentStatus;
+
+  if (paymentStatus === "COMPLETED") {
+    existOrder.orderStatus = "COMPLETED";
+  } else {
+    existOrder.orderStatus = "PENDING";
+  }
+
+  await existOrder.save();
+
+  return existOrder;
+}
+
 module.exports = {
   createNewOrder,
   updateShippingStatus,
   getOrdersByBuyerId,
   getOrdersBySellerId,
+  updatePaypalTransactionId,
 };
