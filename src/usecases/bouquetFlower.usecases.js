@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const BouquetFlower = require("../model/bouquet.model");
 const createError = require("http-errors");
 
@@ -53,10 +54,22 @@ async function deleteById(idBouquet, ownerId) {
   return deleteBouquet;
 }
 
+//traer todos los bouquets por el id del vendedor
+async function getBouquetByOwnerId(ownerId) {
+  if (!mongoose.Types.ObjectId.isValid(ownerId))
+    throw createError(400, "Invalid owner ID");
+
+  const bouquets = await BouquetFlower.find({ ownerId });
+  if (!bouquets.length) throw createError(404, "bouquets not found");
+
+  return bouquets;
+}
+
 module.exports = {
   createNewBouquet,
   getAllBouquet,
   getById,
   deleteById,
   updateById,
+  getBouquetByOwnerId,
 };

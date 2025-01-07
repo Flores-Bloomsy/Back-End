@@ -14,6 +14,7 @@
   - [Crear un nuevo ramo](#crear-un-nuevo-producto)
   - [Ver todos los productos](#ver-todos-los-productos)
   - [Ver producto por su id](#ver-producto-por-su-id)
+  - [Ver producto por id del creador](#ver-todos-los-productos-por-el-id-del-creador)
   - [Actualizar producto por su id](#actualizar-producto-por-id)
   - [Borrar producto por su id](#borrar-producto-por-id)
 - [Carrito de compras](#carrito-de-compras)
@@ -421,7 +422,7 @@ regresa todos los ramos existentes
 
 ### Ver producto por su id
 
-GET / http://localhost:8080/bouquet/:bouquetid
+GET / http://localhost:8080/bouquet/get-bouquet-by-id/:bouquetid
 
 respuesta exitosa
 
@@ -479,6 +480,15 @@ respuesta exitosa
   }
 }
 ```
+
+### Ver Todos los productos por el id del creador
+
+**Configurar**  
+en `Headers` crea un nuevo Header llamado `Authorization` y asignale el valor `Bearer + TOKEN`, para continuar con la solicitud
+
+GET / http://localhost:8080/bouquet/get-seller-bouquets/
+
+**Regresa un arreglo de todos los ramos que el vendedor tiene a la venta**
 
 ### Actualizar Producto por id
 
