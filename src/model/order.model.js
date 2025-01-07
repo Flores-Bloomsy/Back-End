@@ -15,6 +15,7 @@ const productSchema = new Schema(
       ref: "userseller",
       required: true,
     },
+    paypalMerchantId: { type: String },
     storeName: {
       type: String,
       required: true,
@@ -103,17 +104,16 @@ const orderSchema = new Schema(
     shippingAddress: shippingAddressSchema,
     paymentStatus: {
       type: String,
-      enum: ["pending", "completed", "failed"],
-      default: "pending",
+      enum: ["PENDING", "COMPLETED", "FAILED"],
+      default: "PENDING",
     },
     orderStatus: {
       type: String,
-      enum: ["pending", "shipped", "delivered"],
-      default: "pending",
+      enum: ["PENDING", "COMPLETED", "FAILED"],
+      default: "PENDING",
     },
-    stripePaymentId: {
+    paypalTransactionId: {
       type: String,
-      required: true,
     },
     stripeChargeId: {
       type: String,
