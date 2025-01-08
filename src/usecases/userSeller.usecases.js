@@ -1,4 +1,3 @@
-process.loadEnvFile();
 const { Types } = require("mongoose");
 const createError = require("http-errors");
 const UserSeller = require("../model/userSeller");

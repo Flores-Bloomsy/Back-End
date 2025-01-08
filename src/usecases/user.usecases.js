@@ -1,13 +1,13 @@
 const User = require("../model/userBuyer");
+const ShoppingCartUseCases = require("../usecases/shoppingCart.useCases");
 const { encrypt, compare } = require("../lib/encryption");
 const { createjwt } = require("../lib/jwt");
 const createError = require("http-errors");
 const { Types } = require("mongoose");
-const { json } = require("express");
 
 // para registrarse
 async function signup(req, res) {
-  const { email, password } = req.body;
+  const { email, password, cart } = req.body;
 
   try {
     if (!email || !password) {
@@ -34,6 +34,11 @@ async function signup(req, res) {
 
     await user.save();
 
+    const newCart = await ShoppingCartUseCases.createCart({
+      ownerId: user._id,
+      items: cart?.items || [],
+    });
+
     //jwt
 
     res.status(201).json({
@@ -43,8 +48,11 @@ async function signup(req, res) {
         ...user._doc,
         password: undefined,
       },
+      cart: newCart,
     });
   } catch (error) {
+    console.error("Signup error:", error); // Añadido para depuración
+
     res.status(400).json({ success: false, message: error.message });
   }
 }

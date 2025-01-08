@@ -1,5 +1,6 @@
 const { model, Schema } = require("mongoose");
 const { isEmail } = require("validator");
+const crypto = require("crypto");
 
 const time24hoursRegex = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
 
@@ -51,7 +52,7 @@ const userSellerSchema = new Schema(
     storeName: {
       type: String,
     },
-    logo: {
+    profilePic: {
       type: String,
     },
     phone: {
@@ -87,7 +88,29 @@ const userSellerSchema = new Schema(
       type: scheduleSchema,
       required: false,
     },
+    paypalMerchantId: {
+      type: String,
+      required: false,
+    },
+
+    trackingId: {
+      type: String,
+      default: () => crypto.randomBytes(5).toString("hex"),
+      unique: true,
+    },
+    legal_consents: {
+      consent_type: {
+        type: String,
+        default: "SHARE_DATA_CONSENT",
+      },
+      granted: {
+        type: Boolean,
+        default: true,
+      },
+    },
+    actionUrl: { type: String },
   },
+
   {
     timestamps: true,
   }

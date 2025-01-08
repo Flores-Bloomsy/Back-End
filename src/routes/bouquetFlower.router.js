@@ -4,14 +4,22 @@ const { Router } = require("express");
 const bouquetUseCase = require("../usecases/bouquetFlower.usecases");
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
+const createError = require("http-errors");
 
 const router = Router();
 
 //create new Bouquet
-router.post("/", auth, authorize("seller"), async (req, res) => {
+router.post("/create-bouquet", auth, authorize("seller"), async (req, res) => {
   try {
     const data = req.body;
     const ownerId = req.user;
+
+    if (data.sold)
+      throw createError(
+        409,
+        "'sold' field should not be provided and cannot be modified"
+      );
+
     const bouquet = await bouquetUseCase.createNewBouquet({
       ...data,
       ownerId: ownerId._id,
@@ -31,7 +39,7 @@ router.post("/", auth, authorize("seller"), async (req, res) => {
 });
 
 // get all Bouquet
-router.get("/", async (req, res) => {
+router.get("/get-bouquets", async (req, res) => {
   try {
     const allBouquets = await bouquetUseCase.getAllBouquet();
 
@@ -49,7 +57,7 @@ router.get("/", async (req, res) => {
 });
 
 //get bouquet by id
-router.get("/:id", async (req, res) => {
+router.get("/get-bouquet-by-id/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const getBouquetById = await bouquetUseCase.getById(id);
@@ -68,11 +76,12 @@ router.get("/:id", async (req, res) => {
 });
 
 //update bouquet by id
-router.patch("/:id", auth, async (req, res) => {
+router.patch("/update/:id", auth, authorize("seller"), async (req, res) => {
   try {
     const id = req.params.id;
     const newData = req.body;
     const ownerId = req.user;
+    if (newData.sold) throw createError(409, "sold is not modifiable");
 
     const updateBouquet = await bouquetUseCase.updateById(id, ownerId, newData);
 
@@ -90,7 +99,7 @@ router.patch("/:id", auth, async (req, res) => {
 });
 
 //delete bouquet by id
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/delete/:id", auth, authorize("seller"), async (req, res) => {
   try {
     const id = req.params.id;
     const ownerId = req.user;
@@ -109,5 +118,30 @@ router.delete("/:id", auth, async (req, res) => {
     });
   }
 });
+
+//get bouquets by ownerId
+router.get(
+  "/get-seller-bouquets/",
+  auth,
+  authorize("seller"),
+  async (req, res) => {
+    try {
+      const ownerId = req.user.id;
+      console.log("ownerId:", ownerId);
+      const bouquets = await bouquetUseCase.getBouquetByOwnerId(ownerId);
+
+      res.json({
+        success: true,
+        message: "bouquets found",
+        data: bouquets,
+      });
+    } catch (error) {
+      res.status(error.status || 500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+);
 
 module.exports = router;
