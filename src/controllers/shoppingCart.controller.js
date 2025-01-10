@@ -84,21 +84,27 @@ exports.getCartById = async (req, res) => {
 //   }
 // };
 
-// Eliminar un carrito
-// exports.deleteCart = async (req, res) => {
-//   try {
-//     const { id } = req.params;
+//Eliminar un carrito
+exports.deleteCart = async (req, res) => {
+  try {
+    const { ownerId } = req.params;
 
-//     const deletedCart = await ShoppingCart.findByIdAndDelete(id);
+    const deletedCart = await ShoppingCart.findOne({
+      ownerId: ownerId,
+    });
 
-//     if (!deletedCart)
-//       return res.status(404).json({ message: "Carrito no encontrado" });
+    if (!deletedCart)
+      return res.status(404).json({ message: "Carrito no encontrado" });
 
-//     res.status(200).json({ message: "Carrito eliminado" });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+    deletedCart.items = [];
+
+    await deletedCart.save();
+
+    res.status(200).json({ message: "Carrito eliminado" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // Agregar un producto al carrito
 exports.addProductToCart = async (req, res) => {
