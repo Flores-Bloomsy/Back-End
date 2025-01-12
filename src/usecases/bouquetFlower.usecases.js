@@ -85,7 +85,15 @@ async function getBouquetByFilter(filters) {
       throw createError(404, `El campo '${field}' es obligatorio`);
     }
   }
-
+  // Verifica que no haya propiedades adicionales a las requeridas
+  const filterKeys = Object.keys(filters);
+  const extraFields = filterKeys.filter((key) => !requiredFields.includes(key));
+  if (extraFields.length > 0) {
+    throw createError(
+      400,
+      `Los campos '${extraFields.join(", ")}' no son permitidos`
+    );
+  }
   //estructura para buscar en un objeto anidado
   const query = {
     "details.occasion": { $in: filters.occasion },
