@@ -144,4 +144,23 @@ router.get(
   }
 );
 
+//get bouquets by details filter
+router.get("/search", async (req, res) => {
+  try {
+    const filters = req.body;
+    console.log(req.body);
+    const bouquetsFiltered = await bouquetUseCase.getBouquetByFilter(filters);
+    res.json({
+      success: true,
+      message: "bouquets filtered",
+      data: bouquetsFiltered,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 module.exports = router;

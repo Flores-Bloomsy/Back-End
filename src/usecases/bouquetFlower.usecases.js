@@ -65,6 +65,67 @@ async function getBouquetByOwnerId(ownerId) {
   return bouquets;
 }
 
+async function getBouquetByFilter(filters) {
+  const requiredFields = [
+    "occasion",
+    "size",
+    "color",
+    "style",
+    "flowerType",
+    "personality",
+  ];
+
+  // Verifica que todos los campos requeridos estén presentes
+  for (const field of requiredFields) {
+    if (
+      !filters[field] ||
+      typeof filters[field] !== "string" ||
+      filters[field].trim() === ""
+    ) {
+      throw createError(404, `El campo '${field}' es obligatorio`);
+    }
+  }
+
+  //estructura para buscar en un objeto anidado
+  const query = {
+    "details.occasion": { $in: filters.occasion },
+    "details.size": filters.size,
+    "details.color": { $in: filters.color },
+    "details.style": filters.style,
+    "details.flowerType": { $in: filters.flowerType },
+    "details.personality": { $in: filters.personality },
+  };
+
+  let resultFilter = await BouquetFlower.find(query).limit(4);
+  console.log("Consulta", query);
+
+  // Si no se encuentran resultados con la consulta exacta
+  if (!resultFilter.length) {
+    const fallbackQuery = {
+      "details.occasion": { $in: filters.occasion },
+      "details.color": { $in: filters.color },
+      "details.flowerType": { $in: filters.flowerType },
+    };
+    console.log("Consulta de respaldo:", fallbackQuery);
+
+    resultFilter = await BouquetFlower.find(fallbackQuery).limit(4);
+  }
+
+  // Si aún no se encuentran resultados, buscamos solo por  tipo de flor(flowerType)
+  if (!resultFilter.length) {
+    const finalFallbackQuery = {
+      "details.flowerType": { $in: filters.flowerType },
+    };
+    console.log("Consulta final de respaldo:", finalFallbackQuery);
+
+    resultFilter = await BouquetFlower.find(finalFallbackQuery).limit(4);
+  }
+
+  console.log("Resultado final:", resultFilter);
+
+  return resultFilter;
+}
+
 module.exports = {
   createNewBouquet,
   getAllBouquet,
@@ -72,4 +133,5 @@ module.exports = {
   deleteById,
   updateById,
   getBouquetByOwnerId,
+  getBouquetByFilter,
 };
