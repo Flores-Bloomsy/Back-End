@@ -65,6 +65,67 @@ async function getBouquetByOwnerId(ownerId) {
   return bouquets;
 }
 
+async function getBouquetByFilter(filters) {
+  const requiredFields = ["occasion", "size", "color", "style", "flowerType"];
+
+  // Verifica que todos los campos requeridos estén presentes
+  for (const field of requiredFields) {
+    if (
+      !filters[field] ||
+      typeof filters[field] !== "string" ||
+      filters[field].trim() === ""
+    ) {
+      throw createError(404, `El campo '${field}' es obligatorio`);
+    }
+  }
+  // Verifica que no haya propiedades adicionales a las requeridas
+  const filterKeys = Object.keys(filters);
+  const extraFields = filterKeys.filter((key) => !requiredFields.includes(key));
+  if (extraFields.length > 0) {
+    throw createError(
+      400,
+      `Los campos '${extraFields.join(", ")}' no son permitidos`
+    );
+  }
+  //estructura para buscar en un objeto anidado
+  const query = {
+    "details.occasion": { $in: filters.occasion },
+    "details.size": filters.size,
+    "details.color": { $in: filters.color },
+    "details.style": filters.style,
+    "details.flowerType": { $in: filters.flowerType },
+  };
+
+  let resultFilter = await BouquetFlower.find(query).limit(3);
+  console.log("Consulta", query);
+
+  // Si no se encuentran resultados con la consulta exacta
+  if (!resultFilter.length) {
+    const fallbackQuery = {
+      "details.occasion": { $in: filters.occasion },
+      "details.color": { $in: filters.color },
+      "details.flowerType": { $in: filters.flowerType },
+    };
+    console.log("Consulta de respaldo:", fallbackQuery);
+
+    resultFilter = await BouquetFlower.find(fallbackQuery).limit(3);
+  }
+
+  // Si aún no se encuentran resultados, buscamos solo por  tipo de flor(flowerType)
+  if (!resultFilter.length) {
+    const finalFallbackQuery = {
+      "details.flowerType": { $in: filters.flowerType },
+    };
+    console.log("Consulta final de respaldo:", finalFallbackQuery);
+
+    resultFilter = await BouquetFlower.find(finalFallbackQuery).limit(3);
+  }
+
+  console.log("Resultado final:", resultFilter);
+
+  return resultFilter;
+}
+
 module.exports = {
   createNewBouquet,
   getAllBouquet,
@@ -72,4 +133,5 @@ module.exports = {
   deleteById,
   updateById,
   getBouquetByOwnerId,
+  getBouquetByFilter,
 };

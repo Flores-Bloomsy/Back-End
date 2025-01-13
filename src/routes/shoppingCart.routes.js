@@ -17,6 +17,6 @@ router.delete(
 );
 // router.get("/", shoppingCartController.getCarts);
 // router.put("/:id", shoppingCartController.updateCart);
-// router.delete("/:id", shoppingCartController.deleteCart);
+router.delete("/:ownerId", shoppingCartController.deleteCart);
 
 module.exports = router;
