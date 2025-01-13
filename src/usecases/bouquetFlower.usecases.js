@@ -66,14 +66,7 @@ async function getBouquetByOwnerId(ownerId) {
 }
 
 async function getBouquetByFilter(filters) {
-  const requiredFields = [
-    "occasion",
-    "size",
-    "color",
-    "style",
-    "flowerType",
-    "personality",
-  ];
+  const requiredFields = ["occasion", "size", "color", "style", "flowerType"];
 
   // Verifica que todos los campos requeridos estén presentes
   for (const field of requiredFields) {
@@ -101,10 +94,9 @@ async function getBouquetByFilter(filters) {
     "details.color": { $in: filters.color },
     "details.style": filters.style,
     "details.flowerType": { $in: filters.flowerType },
-    "details.personality": { $in: filters.personality },
   };
 
-  let resultFilter = await BouquetFlower.find(query).limit(4);
+  let resultFilter = await BouquetFlower.find(query).limit(3);
   console.log("Consulta", query);
 
   // Si no se encuentran resultados con la consulta exacta
@@ -116,7 +108,7 @@ async function getBouquetByFilter(filters) {
     };
     console.log("Consulta de respaldo:", fallbackQuery);
 
-    resultFilter = await BouquetFlower.find(fallbackQuery).limit(4);
+    resultFilter = await BouquetFlower.find(fallbackQuery).limit(3);
   }
 
   // Si aún no se encuentran resultados, buscamos solo por  tipo de flor(flowerType)
@@ -126,7 +118,7 @@ async function getBouquetByFilter(filters) {
     };
     console.log("Consulta final de respaldo:", finalFallbackQuery);
 
-    resultFilter = await BouquetFlower.find(finalFallbackQuery).limit(4);
+    resultFilter = await BouquetFlower.find(finalFallbackQuery).limit(3);
   }
 
   console.log("Resultado final:", resultFilter);

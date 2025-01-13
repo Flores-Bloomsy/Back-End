@@ -147,8 +147,9 @@ router.get(
 //get bouquets by details filter
 router.get("/search", async (req, res) => {
   try {
-    const filters = req.body;
-    console.log(req.body);
+    const filters = req.query;
+    console.log(filters);
+
     const bouquetsFiltered = await bouquetUseCase.getBouquetByFilter(filters);
     res.json({
       success: true,
