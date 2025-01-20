@@ -142,6 +142,52 @@ router.patch(
   }
 );
 
+router.get("/get-custom-message/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const message = await orderUseCases.getCustomMessageById(id);
+    res.json({
+      success: true,
+      message: "message obtained successfull",
+      data: message,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+router.post(
+  "/add-customMessage/:id",
+  auth,
+  authorize("buyer"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { customMessage } = req.body;
+      const customerId = req.user._id;
+
+      const messageSent = await orderUseCases.addCustomMessageById(
+        id,
+        customMessage,
+        customerId
+      );
+      res.json({
+        success: true,
+        message: "added custom message",
+        data: messageSent,
+      });
+    } catch (error) {
+      res.status(error.status || 500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+);
+
 //enviar datos a paypal
 router.post("/create-payment", createOrder);
 
