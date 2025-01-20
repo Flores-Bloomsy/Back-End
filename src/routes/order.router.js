@@ -84,6 +84,34 @@ router.get("/orders-by-buyer", auth, authorize("buyer"), async (req, res) => {
   }
 });
 
+// Obtener una orden específica por su ID
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // console.log("id de order", id);
+    const order = await orderUseCases.getOrderById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Orden no encontrada",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Orden recuperada con éxito",
+      data: order,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 //obtener las ordenes por el vendedor (historial de ventas)
 router.get("/orders-by-seller", auth, authorize("seller"), async (req, res) => {
   try {

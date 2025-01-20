@@ -93,9 +93,19 @@ async function getOrdersByBuyerId(buyerId) {
   return findOrders;
 }
 
+const getOrderById = async (id) => {
+  // console.log("orden id", id);
+  try {
+    const order = await Order.findById(id);
+    return order;
+  } catch (error) {
+    throw new Error("Error al obtener la orden");
+  }
+};
+
 //obtiene ordenes por el id del vendedor
 async function getOrdersBySellerId(sellerId) {
-  console.log(sellerId);
+  //console.log(sellerId);
   const findOrders = await Order.find({
     products: {
       $elemMatch: {
@@ -174,4 +184,5 @@ module.exports = {
   updatePaypalTransactionId,
   getCustomMessageById,
   addCustomMessageById,
+  getOrderById,
 };
