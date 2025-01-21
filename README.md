@@ -23,6 +23,9 @@
   - [Agregar un producto al carrito](#agregar-un-producto-al-carrito)
   - [Modificar la cantidad de un producto](#modificar-la-cantidad-de-un-producto)
   - [Eliminar un producto del carrito](#eliminar-un-prodcuto-del-carrito)
+- [Mensaje personalizado](#mensaje-personalizado)
+  - [Agregar Mensaje Personalizado](#agregar-mensaje-personalizado)
+  - [Ver Mensaje Personalizado](#ver-mensaje-personalizado)
 
 ## user
 
@@ -592,7 +595,7 @@ Respuesta exitosa
 **requisitos**  
 todo lo relacionado con el carrito se necesita estar autenticado
 
-**Configuración del Header**
+**Configuración del Header**  
 1 Ve a la sección de Headers en tu herramienta de prueba de API (como Postman o tu código).  
 2 Crea un nuevo header con el nombre Authorization.  
 3 Asigna al header el siguiente valor:
@@ -856,5 +859,43 @@ Respuesta exitosa
     "createdAt": "2024-12-12T13:02:04.151Z",
     "__v": 2
   }
+}
+```
+
+## mensaje personalizado
+
+### agregar mensaje personalizado
+
+POST / http://localhost:8080/order/add-customMessage/:idOrder
+
+**Configuración del Header**  
+1 Ve a la sección de Headers en tu herramienta de prueba de API  
+2 Crea un nuevo header con el nombre Authorization.  
+3 Asigna al header el siguiente valor:
+`Bearer <token> `  
+4 Reemplaza <TOKEN> con el token que obtuviste al iniciar sesión.  
+5 solo el dueño de la orden puede realizar esta funcion
+
+formato del body de la solicitud
+
+```json
+{
+  "customMessage": "tu mensaje"
+}
+```
+
+regresa la orden completa
+
+### ver mensaje personalizado
+
+GET / http://localhost:8080/order/get-custom-message/:idOrder
+
+respuesta exitosa
+
+```json
+{
+  "success": true,
+  "message": "message obtained successfull",
+  "data": "tu mensaje "
 }
 ```

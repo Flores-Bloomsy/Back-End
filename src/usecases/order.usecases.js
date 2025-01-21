@@ -1,7 +1,7 @@
 const Order = require("../model/order.model");
 const BouquetFlower = require("../model/bouquet.model");
 const User = require("../model/userBuyer");
-
+const { createQR } = require("../lib/createQR");
 const createError = require("http-errors");
 
 //crear una nueva orden
@@ -45,9 +45,11 @@ async function createNewOrder(data) {
     return acc;
   }, {});
 
-  console.log({ sellerPayments });
+  console.log("asas", { sellerPayments });
 
-  const newOrder = await Order.create(data);
+  const newOrder = new Order(data);
+
+  await newOrder.save();
 
   await newOrder.populate("products.productId products.sellerId");
   return newOrder;
@@ -91,9 +93,19 @@ async function getOrdersByBuyerId(buyerId) {
   return findOrders;
 }
 
+const getOrderById = async (id) => {
+  // console.log("orden id", id);
+  try {
+    const order = await Order.findById(id);
+    return order;
+  } catch (error) {
+    throw createError(404, "orders not found");
+  }
+};
+
 //obtiene ordenes por el id del vendedor
 async function getOrdersBySellerId(sellerId) {
-  console.log(sellerId);
+  //console.log(sellerId);
   const findOrders = await Order.find({
     products: {
       $elemMatch: {
@@ -133,10 +145,44 @@ async function updatePaypalTransactionId(
   return existOrder;
 }
 
+async function getCustomMessageById(id) {
+  const findOrder = await Order.findById(id);
+
+  if (!findOrder) throw createError(404, "orden no encontrada");
+
+  const customMessage = findOrder.customMessage;
+
+  return customMessage;
+}
+
+async function addCustomMessageById(id, customMessage, customerId) {
+  const findOrder = await Order.findById(id);
+
+  if (!findOrder) throw createError(404, "orden no encontrada");
+
+  if (findOrder.customerId.toString() !== customerId.toString())
+    throw createError(403, "you don't have permission to add message custom");
+
+  const qrCode = await createQR(id);
+  const newData = { qrCode, customMessage };
+  console.log(newData);
+
+  const addMessage = await Order.findByIdAndUpdate(
+    id,
+    { $set: newData },
+    { new: true }
+  );
+  console.log("asdd", addMessage);
+  return addMessage;
+}
+
 module.exports = {
   createNewOrder,
   updateShippingStatus,
   getOrdersByBuyerId,
   getOrdersBySellerId,
   updatePaypalTransactionId,
+  getCustomMessageById,
+  addCustomMessageById,
+  getOrderById,
 };

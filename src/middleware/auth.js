@@ -16,7 +16,6 @@ async function auth(req, res, next) {
 
     try {
       user = await userSellerUseCases.getById(payload.id);
-      console.log("user1", user);
     } catch (error) {
       // si "getById" falla porque no encuentra el usuario, el middleware continua y no termina en este punto
       if (error.status !== 404) throw error;

@@ -18,7 +18,6 @@ router.post("/new-order", auth, authorize("buyer"), async (req, res) => {
       ...data,
       customerId,
     };
-    console.log(orderData);
 
     const newOrder = await orderUseCases.createNewOrder(orderData);
 
@@ -84,8 +83,37 @@ router.get("/orders-by-buyer", auth, authorize("buyer"), async (req, res) => {
   }
 });
 
+// Obtener una orden específica por su ID
+router.get("/order-by-id/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // console.log("id de order", id);
+    const order = await orderUseCases.getOrderById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Orden no encontrada",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Orden recuperada con éxito",
+      data: order,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 //obtener las ordenes por el vendedor (historial de ventas)
 router.get("/orders-by-seller", auth, authorize("seller"), async (req, res) => {
+  console.log("as", req.user);
   try {
     const sellerId = req.user.id;
     const orders = await orderUseCases.getOrdersBySellerId(sellerId);
@@ -133,6 +161,52 @@ router.patch(
           data: updatedOrder,
         });
       }
+    } catch (error) {
+      res.status(error.status || 500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+);
+
+router.get("/get-custom-message/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const message = await orderUseCases.getCustomMessageById(id);
+    res.json({
+      success: true,
+      message: "message obtained successfull",
+      data: message,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+router.post(
+  "/add-customMessage/:id",
+  auth,
+  authorize("buyer"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { customMessage } = req.body;
+      const customerId = req.user._id;
+
+      const messageSent = await orderUseCases.addCustomMessageById(
+        id,
+        customMessage,
+        customerId
+      );
+      res.json({
+        success: true,
+        message: "added custom message",
+        data: messageSent,
+      });
     } catch (error) {
       res.status(error.status || 500).json({
         success: false,

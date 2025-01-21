@@ -120,7 +120,10 @@ const orderSchema = new Schema(
     },
     customMessage: {
       type: String,
-      default: "",
+    },
+    qrCode: {
+      type: String,
+      default: null,
     },
   },
   {
