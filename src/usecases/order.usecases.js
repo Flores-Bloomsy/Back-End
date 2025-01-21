@@ -99,7 +99,7 @@ const getOrderById = async (id) => {
     const order = await Order.findById(id);
     return order;
   } catch (error) {
-    throw new Error("Error al obtener la orden");
+    throw createError(404, "orders not found");
   }
 };
 

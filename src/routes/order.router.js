@@ -18,7 +18,6 @@ router.post("/new-order", auth, authorize("buyer"), async (req, res) => {
       ...data,
       customerId,
     };
-    console.log(orderData);
 
     const newOrder = await orderUseCases.createNewOrder(orderData);
 
@@ -85,7 +84,7 @@ router.get("/orders-by-buyer", auth, authorize("buyer"), async (req, res) => {
 });
 
 // Obtener una orden específica por su ID
-router.get("/:id", auth, async (req, res) => {
+router.get("/order-by-id/:id", auth, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -114,6 +113,7 @@ router.get("/:id", auth, async (req, res) => {
 
 //obtener las ordenes por el vendedor (historial de ventas)
 router.get("/orders-by-seller", auth, authorize("seller"), async (req, res) => {
+  console.log("as", req.user);
   try {
     const sellerId = req.user.id;
     const orders = await orderUseCases.getOrdersBySellerId(sellerId);
