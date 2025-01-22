@@ -148,7 +148,6 @@ router.get(
 router.get("/search", async (req, res) => {
   try {
     const filters = req.query;
-    console.log(filters);
 
     const bouquetsFiltered = await bouquetUseCase.getBouquetByFilter(filters);
     res.json({

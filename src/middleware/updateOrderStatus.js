@@ -3,7 +3,6 @@ function updateOrderStatus(next) {
     const productStatuses = this.products.map(
       (product) => product.shippingStatus
     );
-    console.log(productStatuses);
 
     if (productStatuses.every((status) => status === "delivered")) {
       this.orderStatus = "delivered";
