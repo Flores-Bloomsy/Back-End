@@ -58,6 +58,10 @@ const userSellerSchema = new Schema(
     phone: {
       type: String,
     },
+    name: {
+      type: String,
+      required: false,
+    },
     email: {
       type: String,
       required: true,
@@ -68,7 +72,11 @@ const userSellerSchema = new Schema(
     password: {
       type: String,
       select: false,
-      required: true,
+      required: false,
+    },
+    google: {
+      type: Boolean,
+      default: false,
     },
     emailValidate: {
       type: Boolean,
