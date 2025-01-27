@@ -14,7 +14,11 @@ const userBuyer = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
+    },
+    google: {
+      type: Boolean,
+      default: false,
     },
     address: {
       street: {
