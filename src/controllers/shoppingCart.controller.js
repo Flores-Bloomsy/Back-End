@@ -114,6 +114,19 @@ exports.addProductToCart = async (req, res) => {
 
     const cart = await ShoppingCart.findOne({ ownerId });
 
+    if (!cart) {
+      const newCart = new ShoppingCart({
+        ownerId,
+        items: [{ bouquetFlowerId, quantity }],
+      });
+      const updatedCart = await newCart.save();
+      return res.json({
+        success: true,
+        message: "Carrito creado y producto agregado",
+        data: updatedCart,
+      });
+    }
+
     if (!cart) throw createError(404, "carrito no encontrado");
 
     // Verificar si el producto ya está en el carrito
