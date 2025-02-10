@@ -146,11 +146,15 @@ async function updatePaypalTransactionId(
 }
 
 async function getCustomMessageById(id) {
-  const findOrder = await Order.findById(id);
+  const findOrder = await Order.findById(id).populate("customerId");
 
   if (!findOrder) throw createError(404, "orden no encontrada");
 
-  const customMessage = findOrder.customMessage;
+  const customMessage = {
+    message: findOrder.customMessage,
+    sender: findOrder.customerId?.name,
+    receiver: findOrder.shippingAddress?.name,
+  };
 
   return customMessage;
 }
@@ -176,6 +180,13 @@ async function addCustomMessageById(id, customMessage, customerId) {
   return addMessage;
 }
 
+async function getAllOrders() {
+  const orders = await Order.find().select("_id");
+
+  if (!orders.length) throw createError(404, "orders not found");
+  return orders;
+}
+
 module.exports = {
   createNewOrder,
   updateShippingStatus,
@@ -185,4 +196,5 @@ module.exports = {
   getCustomMessageById,
   addCustomMessageById,
   getOrderById,
+  getAllOrders,
 };

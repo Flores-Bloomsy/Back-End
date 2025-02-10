@@ -1,6 +1,5 @@
 const express = require("express");
 const orderUseCases = require("../usecases/order.usecases");
-const Order = require("../model/order.model");
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
 
@@ -215,6 +214,22 @@ router.post(
     }
   }
 );
+
+router.get("/get-orders", async (req, res) => {
+  try {
+    const orders = await orderUseCases.getAllOrders();
+    res.json({
+      success: true,
+      message: "Orders retrieved successfully",
+      data: orders,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
 
 //enviar datos a paypal
 router.post("/create-payment", createOrder);
